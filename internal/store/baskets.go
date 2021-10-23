@@ -1,13 +1,16 @@
 package store
 
-import "errors"
+import (
+	"errors"
+)
 
 func (s *Store) GetBasket(userId int) (UserBasket, error) {
 	if err := s.Open(); err != nil {
 		return UserBasket{}, err
 	}
 	defer s.Database.Close()
-	rows, err := s.Database.Query("SELECT item_id FROM baskets WHERE user_id=$1", userId)
+
+	rows, err := s.Database.Query("SELECT id_item FROM baskets WHERE id_user=$1", userId)
 	if err != nil {
 		return UserBasket{}, err
 	}
@@ -31,7 +34,7 @@ func (s *Store) GetBasket(userId int) (UserBasket, error) {
 		if err != nil {
 			return UserBasket{}, err
 		}
-		for rows.Next() {
+		for itemsRow.Next() {
 			var item Item
 			if err := itemsRow.Scan(&item.Name, &item.Description); err != nil {
 				return UserBasket{}, err
@@ -42,7 +45,6 @@ func (s *Store) GetBasket(userId int) (UserBasket, error) {
 			return UserBasket{}, err
 		}
 	}
-
 	return userBasket, nil
 }
 
@@ -51,7 +53,7 @@ func (s *Store) GetBaskets() ([]Basket, error) {
 		return []Basket{}, err
 	}
 	defer s.Database.Close()
-	rows, err := s.Database.Query("SELECT user_id, item_id FROM baskets")
+	rows, err := s.Database.Query("SELECT id_user, id_item FROM baskets")
 	if err != nil {
 		return []Basket{}, err
 	}
@@ -71,29 +73,29 @@ func (s *Store) GetBaskets() ([]Basket, error) {
 	return baskets, nil
 }
 
-// Actions: ["ADD", "DELL"]
-func (s *Store) UpdateBasket(userId, itemId int, action string) error {
+// Actions: ["add", "dell"]
+func (s *Store) UpdateBasket(basket BasketUpdate) error {
 	if err := s.Open(); err != nil {
 		return err
 	}
 	defer s.Database.Close()
 
-	switch action {
-	case "ADD":
+	switch basket.Action {
+	case "add":
 		_, err := s.Database.Exec(
 			"INSERT INTO baskets (id_user, id_item) VALUES ($1, $2)",
-			userId,
-			itemId,
+			basket.UserId,
+			basket.ItemId,
 		)
 		if err != nil {
 			return err
 		}
 		return nil
-	case "DELL":
+	case "dell":
 		_, err := s.Database.Exec(
-			"DELETE FROM baskets WHERE id_user=$1, id_item=$2",
-			userId,
-			itemId,
+			"DELETE FROM baskets WHERE id_user=$1 AND id_item=$2",
+			basket.UserId,
+			basket.ItemId,
 		)
 		if err != nil {
 			return err

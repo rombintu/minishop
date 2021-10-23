@@ -174,7 +174,7 @@ func (s *App) GetBasket() gin.HandlerFunc {
 func (s *App) GetBaskets() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		notOk := store.Ping{
-			Message: "basket not found",
+			Message: "baskets not found",
 		}
 		baskets, err := s.Store.GetBaskets()
 		if err != nil {
@@ -184,5 +184,32 @@ func (s *App) GetBaskets() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusCreated, baskets)
+	}
+}
+
+func (s *App) UpdateBasket() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var basket store.BasketUpdate
+
+		Ok := store.Ping{
+			Message: "basket updated",
+		}
+		notOk := store.Ping{
+			Message: "basket not updated",
+		}
+
+		if err := c.BindJSON(&basket); err != nil {
+			s.Logger.Error(err)
+			c.JSON(http.StatusConflict, notOk)
+			return
+		}
+
+		if err := s.Store.UpdateBasket(basket); err != nil {
+			s.Logger.Error(err)
+			c.JSON(http.StatusConflict, notOk)
+			return
+		}
+
+		c.JSON(http.StatusCreated, Ok)
 	}
 }

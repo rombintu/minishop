@@ -77,3 +77,21 @@ func TestGetUser(t *testing.T) {
 
 	assert.Equal(t, rec.Body.Bytes(), body)
 }
+
+func TestGetBasket(t *testing.T) {
+	config := config.GetConfig("../../config/config.toml")
+
+	s := app.NewApp(config)
+	s.ConfigureLogger()
+	s.ConfigureRouter()
+	s.ConfigureStore()
+	req, err := http.NewRequest("GET", "/basket?id_user=0", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rec := httptest.NewRecorder()
+
+	s.Router.ServeHTTP(rec, req)
+
+	assert.Equal(t, rec.Body.Bytes(), "body")
+}

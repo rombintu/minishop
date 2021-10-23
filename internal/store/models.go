@@ -15,10 +15,15 @@ type Item struct {
 
 // Basket model for db
 type Basket struct {
-	UserId int `json:"user_id"`
-	ItemId int `json:"item_id"`
+	UserId int `json:"id_user"`
+	ItemId int `json:"id_item"`
 }
 
 type UserBasket struct {
 	Items []Item
+}
+
+type BasketUpdate struct {
+	Basket
+	Action string `json:"action"`
 }

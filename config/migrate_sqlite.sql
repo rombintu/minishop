@@ -13,8 +13,8 @@ CREATE TABLE items (
 
 CREATE TABLE baskets (
     id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    item_id INTEGER NOT NULL 
+    id_user INTEGER NOT NULL,
+    id_item INTEGER NOT NULL 
 );
 
 

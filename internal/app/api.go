@@ -79,6 +79,7 @@ func (s *App) ConfigureRouter() {
 
 	s.Router.GET("/basket", s.GetBasket())
 	s.Router.GET("/basket/all", s.GetBaskets())
+	s.Router.POST("/basket", s.UpdateBasket())
 }
 
 // Configure db, from Config file

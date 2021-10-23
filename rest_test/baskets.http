@@ -1,0 +1,30 @@
+### ADD item of basket
+POST http://0.0.0.0:5000/basket HTTP/1.1
+content-type: application/json
+
+{
+    "id_user": 2,
+    "id_item": 2,
+    "action": "add"
+}
+
+### DELETE item of basket
+POST http://0.0.0.0:5000/basket HTTP/1.1
+content-type: application/json
+
+{
+    "id_user": 2,
+    "id_item": 2,
+    "action": "dell"
+}
+
+### GET basket by user id
+
+GET http://0.0.0.0:5000/basket?id_user=2 HTTP/1.1
+content-type: application/json
+
+
+### Get all baskets
+
+GET http://0.0.0.0:5000/basket/all HTTP/1.1
+content-type: application/json
