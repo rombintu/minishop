@@ -1,0 +1,13 @@
+[Default]
+loglevel="debug"
+
+[Server]
+host="0.0.0.0"
+port=":5000"
+
+[Postgres]
+dev = true
+user=""
+password=""
+dbname=""
+sslmode=""

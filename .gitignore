@@ -1,0 +1,11 @@
+# Databases
+*.db
+*.sqlite3
+
+# Secrets
+config.toml
+
+# Bin
+main
+
+# Trash
