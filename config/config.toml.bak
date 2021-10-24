@@ -4,6 +4,7 @@ loglevel="debug"
 [Server]
 host="0.0.0.0"
 port=":5000"
+secret="32_symbols"
 
 [Postgres]
 dev = true

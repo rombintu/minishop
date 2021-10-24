@@ -51,3 +51,26 @@ func (s *Store) GetUser(id int) (User, error) {
 
 	return user, nil
 }
+
+// TODO Unique account
+func (s *Store) GetUserByAccount(account string) (User, error) {
+	if err := s.Open(); err != nil {
+		return User{}, err
+	}
+	defer s.Database.Close()
+	rows, err := s.Database.Query("SELECT account, password, role FROM users WHERE account=$1", account)
+	if err != nil {
+		return User{}, err
+	}
+	rows.Next()
+	var user User
+	if err := rows.Scan(&user.Account, &user.Password, &user.Role); err != nil {
+		return User{}, err
+	}
+
+	if err := rows.Close(); err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}

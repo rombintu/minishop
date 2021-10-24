@@ -8,6 +8,10 @@ import (
 	"github.com/rombintu/minishop/internal/store"
 )
 
+func respondWithError(c *gin.Context, code int, message interface{}) {
+	c.AbortWithStatusJSON(code, gin.H{"error": message})
+}
+
 // Test func, return 200 and {"message" : "pong"}
 func (s *App) Ping() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -24,12 +28,10 @@ func (s *App) CreateUser() gin.HandlerFunc {
 		Ok := store.Ping{
 			Message: "user created",
 		}
-		notOk := store.Ping{
-			Message: "user not created",
-		}
+
 		if err := c.BindJSON(&u); err != nil {
 			s.Logger.Error(err)
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, "user not created")
 			return
 		}
 
@@ -43,13 +45,13 @@ func (s *App) CreateUser() gin.HandlerFunc {
 
 		if account == "" || password == "" {
 			s.Logger.Error("Some user fields is empty")
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, "Some user fields is empty")
 			return
 		}
 
 		if err := s.Store.CreateUser(u); err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -64,24 +66,22 @@ func (s *App) CreateItem() gin.HandlerFunc {
 		Ok := store.Ping{
 			Message: "item created",
 		}
-		notOk := store.Ping{
-			Message: "item not created",
-		}
+
 		if err := c.BindJSON(&i); err != nil {
 			s.Logger.Error(err)
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
 		if i.Name == "" {
 			s.Logger.Error("Some item fields is empty")
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, "Some item fields is empty")
 			return
 		}
 
 		if err := s.Store.CreateItem(i); err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -91,10 +91,9 @@ func (s *App) CreateItem() gin.HandlerFunc {
 
 func (s *App) GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		idStr := c.Query("id")
-		notOk := store.Ping{
-			Message: "user not found",
-		}
+
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			s.Logger.Error(err)
@@ -102,8 +101,8 @@ func (s *App) GetUser() gin.HandlerFunc {
 		}
 		user, err := s.Store.GetUser(id)
 		if err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -114,9 +113,7 @@ func (s *App) GetUser() gin.HandlerFunc {
 func (s *App) GetItem() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.Query("id")
-		notOk := store.Ping{
-			Message: "item not found",
-		}
+
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			s.Logger.Error(err)
@@ -124,8 +121,8 @@ func (s *App) GetItem() gin.HandlerFunc {
 		}
 		item, err := s.Store.GetItem(id)
 		if err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -135,13 +132,10 @@ func (s *App) GetItem() gin.HandlerFunc {
 
 func (s *App) GetItems() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		notOk := store.Ping{
-			Message: "items not found",
-		}
 		items, err := s.Store.GetItems()
 		if err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -152,9 +146,7 @@ func (s *App) GetItems() gin.HandlerFunc {
 func (s *App) GetBasket() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.Query("id_user")
-		notOk := store.Ping{
-			Message: "basket not found",
-		}
+
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			s.Logger.Error(err)
@@ -162,8 +154,8 @@ func (s *App) GetBasket() gin.HandlerFunc {
 		}
 		basket, err := s.Store.GetBasket(id)
 		if err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -173,13 +165,10 @@ func (s *App) GetBasket() gin.HandlerFunc {
 
 func (s *App) GetBaskets() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		notOk := store.Ping{
-			Message: "baskets not found",
-		}
 		baskets, err := s.Store.GetBaskets()
 		if err != nil {
-			c.JSON(http.StatusConflict, notOk)
 			s.Logger.Error(err)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
@@ -194,19 +183,16 @@ func (s *App) UpdateBasket() gin.HandlerFunc {
 		Ok := store.Ping{
 			Message: "basket updated",
 		}
-		notOk := store.Ping{
-			Message: "basket not updated",
-		}
 
 		if err := c.BindJSON(&basket); err != nil {
 			s.Logger.Error(err)
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 
 		if err := s.Store.UpdateBasket(basket); err != nil {
 			s.Logger.Error(err)
-			c.JSON(http.StatusConflict, notOk)
+			respondWithError(c, 401, err.Error())
 			return
 		}
 

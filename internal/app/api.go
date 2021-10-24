@@ -68,18 +68,31 @@ func (s *App) ConfigureLogger() error {
 
 // Add routes
 func (s *App) ConfigureRouter() {
+	// Test connect
 	s.Router.GET("/ping", s.Ping())
 
-	s.Router.GET("/user", s.GetUser())
+	// Create user (registration)
 	s.Router.POST("/user", s.CreateUser())
+
+	// Get token
+	s.Router.POST("/auth", s.Auth())
+
+	// Middleware: req token (user)
+	s.Router.Use(s.VerifyToken())
+	s.Router.GET("/basket", s.GetBasket())
+	s.Router.POST("/basket", s.UpdateBasket())
 
 	s.Router.GET("/item", s.GetItem())
 	s.Router.GET("/item/all", s.GetItems())
+
+	// Middleware: req token (manager)
+	s.Router.Use(s.VerifyTokenManager())
+	s.Router.GET("/user", s.GetUser())
+
+	s.Router.GET("/basket/all", s.GetBaskets())
+
 	s.Router.POST("/item", s.CreateItem())
 
-	s.Router.GET("/basket", s.GetBasket())
-	s.Router.GET("/basket/all", s.GetBaskets())
-	s.Router.POST("/basket", s.UpdateBasket())
 }
 
 // Configure db, from Config file

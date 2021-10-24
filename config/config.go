@@ -12,8 +12,9 @@ type Default struct {
 }
 
 type Server struct {
-	Host string
-	Port string
+	Host   string
+	Port   string
+	Secret string
 }
 
 type Postgres struct {

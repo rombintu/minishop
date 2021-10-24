@@ -4,7 +4,7 @@ POST http://0.0.0.0:5000/user HTTP/1.1
 content-type: application/json
 
 {
-    "account": "user1",
+    "account": "manager",
     "password": "123",
     "role" : "user"
 }
@@ -13,3 +13,4 @@ content-type: application/json
 
 GET http://0.0.0.0:5000/user?id=2 HTTP/1.1
 content-type: application/json
+token: 123

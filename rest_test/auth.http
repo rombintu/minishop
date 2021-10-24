@@ -1,0 +1,15 @@
+### Get token
+POST http://0.0.0.0:5000/auth HTTP/1.1
+content-type: application/json
+
+{
+    "account": "user1",
+    "password": "123",
+    "role" : "user"
+}
+
+### Verify token
+
+GET http://0.0.0.0:5000/token HTTP/1.1
+content-type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5ZTc5NWViLWRhMDMtNGQ5ZC05ZGEyLTg2ZTU3MjQ0MzI1NCIsInVzZXJuYW1lIjoidXNlcjEiLCJpc3N1ZWRfYXQiOiIyMDIxLTEwLTI0VDE0OjUxOjEyLjMwMjA0MDAyNyswMzowMCIsImV4cGlyZWRfYXQiOiIyMDIxLTEwLTI0VDE1OjUxOjEyLjMwMjA0MDIxNCswMzowMCJ9.pvGbtjZH5YiZUUm58eELYsw6Zf6RO5F0SPHAP3OucXI
